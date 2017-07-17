@@ -6,8 +6,8 @@ class Square extends React.Component{
         this.props = props
 
     }
-    render = () =><button onClick={this.update}>{this.props.value}</button>
-update = () => this.props.click(this.props.id)
+    render = () => <div className={`square color_${this.props.value}`}/>
+    update = () => this.props.click(this.props.id)
 
 }
 

@@ -5,7 +5,7 @@ import Board from './Board.js'
 class App extends Component {
   render() {
     return (
-      <Board/>
+      <Board size={10} />
     );
   }
 }
