@@ -3,32 +3,46 @@ import Square from './Square'
 import  './Board.css'
 import Game from './Game'
 class Board extends React.Component{
+
+  gameStart = () => {
+    this.game = new Game(this.gameStart.bind(this));
+    this.game.start();
+    const size_ = this.game.getSize();
+    this.setState({
+        size: size_,
+        data: this.dataInit(size_),
+        i:0,
+        currentKey:0
+    });
+    this.game.dataAsObservable().subscribe({next: data =>{
+      let dat_ = this.state.data;
+      data.forEach((elem) => {
+        dat_[elem.key].value = elem.value
+      } )
+      this.setState({data:dat_});
+      }
+    });
+
+  }
+
+  gameStop = () => this.game.stop()
     constructor(props){
         super(props);
-        this.game = new Game();
-        this.game.dataAsObservable().subscribe({next: data => this.setState({data})})
-        this.game.start();
-        this.props = props;
-        this.state = {
-            data: this.dataInit(),
-            i:0,
-            currentKey:0
-        };
-        // setInterval(() => {
-        //     this.clickSquareHandle(this.state.currentKey)
-        //     this.keyUpdate()
-        // }, 30)
+        this.state = {};
     }
 
-    dataInit = (start) => {
-      let arr = [];
-        for(let i=0; i<this.props.size*this.props.size; i++){
-          arr[i] = 0;
+    dataInit = (size) => {
+      let obj = {};
+        for(let i=0; i<size*size; i++){
+          obj[i] = {
+            key:i,
+            value: 0
+          };
         }
-        return arr;
+        return obj;
     }
     keyUpdate = () => {
-        if (this.state.currentKey === this.props.size*this.props.size - 1) {
+        if (this.state.currentKey === this.state.size*this.state.size - 1) {
             this.setState({currentKey: 0})
         } else {
             this.setState({currentKey: this.state.currentKey + 1})
@@ -36,22 +50,26 @@ class Board extends React.Component{
 
     };
 
-    getDataArr = () => {
+    getData = () => {
         let arrColl = [];
-        for(let i=0; i<this.props.size; i++){
+        for(let i=0; i<this.state.size; i++){
             let arrRow = [];
-            for(let j=0; j<this.props.size; j++) {
-                arrRow.push(<td><Square value = {this.state.data[i*this.props.size+j]} id = {i*this.props.size+j} click={this.clickSquareHandle.bind(this)}/></td>)
+            for(let j=0; j<this.state.size; j++) {
+                arrRow.push(<td key={j}><Square value={this.state.data[i*this.state.size+j].value} key={this.state.data[i*this.state.size+j].key}/></td>)
             }
-            arrColl.push(<tr>{arrRow}</tr>)
+            arrColl.push(<tr key={i}>{arrRow}</tr>)
         }
-        return <table><tbody>{arrColl}</tbody></table>
+        return <table className="center"><tbody>{arrColl}</tbody></table>
     };
-    render = () => <div>{this.getDataArr()}</div>;
+
+    render = () => <div><div>{this.getData()}</div>
+    <div className="start center" onClick={this.gameStart.bind(this)}>START!</div>
+    <div className="stop center" onClick={this.gameStop.bind(this)}>STOP!</div>
+    </div>
 
     clickSquareHandle = (key) => {
 
-        console.log(`click on ${key}`)
+        // console.log(`click on ${key}`)
         this.setState((prevState) => {
             return {
                 data: prevState.data.map((value, key_) => {

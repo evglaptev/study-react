@@ -1,3 +1,23 @@
 .red{
   background-color: red;
 }
+
+.start,.stop{
+    font-size: 24px;
+    padding: 10px;
+    position: relative;
+    cursor: pointer;
+    color: white;
+    width: 80px;
+}
+.center{
+  margin: 10px auto;
+}
+
+.start{
+  background-color: green;
+}
+.stop{
+  background-color: red;
+  width:65px;
+}
